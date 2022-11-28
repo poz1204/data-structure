@@ -1,0 +1,51 @@
+#include<iostream>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+#define MAX 1000
+int a[MAX];
+int tree[MAX] = { 0 };
+
+int left_nodes(int n)
+{
+	int L = 0;
+	int h =(int) log2(n + 1);
+	int x = (int)(n - pow(2, h)+1);
+	int num = (int)pow(2, h - 1);
+	L = num - 1 + min(x,num);
+	return L;
+}
+
+void solve(int a_left, int a_right, int t_root)
+{
+	int n = a_right - a_left + 1; //节点个数
+	if (n == 0) return;
+	int L = left_nodes(n);
+	tree[t_root] = a[a_left + L];
+	int lt_root = 2 * t_root + 1;
+	int rt_root = lt_root + 1;
+	solve(a_left, a_left + L - 1, lt_root);
+	solve(a_left + L + 1, a_right, rt_root);
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++)
+	{
+		int num;
+		cin >> num;
+		a[i] = num;
+	}
+	
+	sort(a, a + n);
+
+	solve(0, n - 1, 0);
+	for (int i = 0; i < n - 1; i++)
+	{
+		cout << tree[i] << " ";
+	}
+	cout << tree[n - 1];
+	return 0;
+}
